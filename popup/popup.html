@@ -28,23 +28,48 @@
     </div>
     <p class="feedback" id="hoverFeedback"></p>
 
-    <div class="setting-row">
-      <label for="category">Source</label>
-      <select id="category">
-        <optgroup label="Everything">
-          <option value="all">All Sources (Chaos Mode)</option>
-        </optgroup>
-        <optgroup label="Fine Art">
-          <option value="impressionism">Impressionism</option>
-          <option value="japanese">Japanese Woodblock</option>
-          <option value="photography">Photography</option>
-          <option value="renaissance">Renaissance</option>
-          <option value="modern">Modern / Contemporary</option>
-        </optgroup>
-        <optgroup label="Space">
-          <option value="space">NASA Space Imagery</option>
-        </optgroup>
-      </select>
+    <button class="sources-btn" id="sourcesToggle">
+      <span>Toggle Sources</span>
+      <span class="sources-chevron">›</span>
+    </button>
+
+    <div class="sources-content" id="sourcesContent" hidden>
+      <div class="toggle-row">
+        <div class="toggle-label-group">
+          <span class="toggle-label">Chaos Mode</span>
+          <span class="toggle-desc">Toggle all sources</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chaosMode">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="category-group">
+        <div class="toggle-row">
+          <span class="toggle-label">Impressionism</span>
+          <label class="toggle"><input type="checkbox" id="cat-impressionism"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Japanese Woodblock</span>
+          <label class="toggle"><input type="checkbox" id="cat-japanese"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Photography</span>
+          <label class="toggle"><input type="checkbox" id="cat-photography"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Renaissance</span>
+          <label class="toggle"><input type="checkbox" id="cat-renaissance"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Modern / Contemporary</span>
+          <label class="toggle"><input type="checkbox" id="cat-modern"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">NASA Space Imagery</span>
+          <label class="toggle"><input type="checkbox" id="cat-space"><span class="slider"></span></label>
+        </div>
+      </div>
     </div>
 
     <div class="stats">

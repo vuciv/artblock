@@ -1,6 +1,15 @@
+const sourcesToggle = document.getElementById('sourcesToggle');
+const sourcesContent = document.getElementById('sourcesContent');
+
+sourcesToggle.addEventListener('click', () => {
+  const open = sourcesContent.hidden;
+  sourcesContent.hidden = !open;
+  sourcesToggle.classList.toggle('open', open);
+});
+
 const enabledToggle = document.getElementById('enabled');
 const hoverToggle = document.getElementById('showHoverControls');
-const categorySelect = document.getElementById('category');
+const chaosModeToggle = document.getElementById('chaosMode');
 const countDisplay = document.getElementById('count');
 const exportBtn = document.getElementById('exportSettings');
 const importBtn = document.getElementById('importSettings');
@@ -8,7 +17,27 @@ const importFile = document.getElementById('importFile');
 const profileFeedback = document.getElementById('profileFeedback');
 const hoverFeedback = document.getElementById('hoverFeedback');
 
-const SYNC_DEFAULTS = { enabled: true, category: 'all', showHoverControls: true };
+const CATEGORY_KEYS = ['impressionism', 'japanese', 'photography', 'renaissance', 'modern', 'space'];
+const CATEGORY_DEFAULTS = Object.fromEntries(CATEGORY_KEYS.map(k => [k, true]));
+const SYNC_DEFAULTS = { enabled: true, showHoverControls: true, categories: CATEGORY_DEFAULTS };
+
+function getCategoryCheckbox(key) {
+  return document.getElementById(`cat-${key}`);
+}
+
+function updateChaosMode() {
+  const all = CATEGORY_KEYS.every(k => getCategoryCheckbox(k).checked);
+  const none = CATEGORY_KEYS.every(k => !getCategoryCheckbox(k).checked);
+  chaosModeToggle.indeterminate = !all && !none;
+  chaosModeToggle.checked = all;
+}
+
+function saveCategories() {
+  const categories = Object.fromEntries(
+    CATEGORY_KEYS.map(k => [k, getCategoryCheckbox(k).checked])
+  );
+  chrome.storage.sync.set({ categories });
+}
 
 // Show/hide the confirm UI for a reset row.
 // The confirm button is on the RIGHT so the user must move their mouse away
@@ -68,8 +97,10 @@ async function getPageKey() {
 
 chrome.storage.sync.get(SYNC_DEFAULTS, (s) => {
   enabledToggle.checked = s.enabled;
-  categorySelect.value = s.category;
   hoverToggle.checked = s.showHoverControls;
+  const cats = s.categories || CATEGORY_DEFAULTS;
+  CATEGORY_KEYS.forEach(k => { getCategoryCheckbox(k).checked = cats[k] ?? true; });
+  updateChaosMode();
 });
 
 chrome.runtime.sendMessage({ type: 'GET_COUNT' }, (r) => {
@@ -77,11 +108,25 @@ chrome.runtime.sendMessage({ type: 'GET_COUNT' }, (r) => {
 });
 
 enabledToggle.addEventListener('change', () => chrome.storage.sync.set({ enabled: enabledToggle.checked }));
+
 hoverToggle.addEventListener('change', () => {
   chrome.storage.sync.set({ showHoverControls: hoverToggle.checked });
   showFeedback(hoverFeedback, 'Refresh page to see effect.');
 });
-categorySelect.addEventListener('change', () => chrome.storage.sync.set({ category: categorySelect.value }));
+
+chaosModeToggle.addEventListener('change', () => {
+  const on = chaosModeToggle.checked;
+  CATEGORY_KEYS.forEach(k => { getCategoryCheckbox(k).checked = on; });
+  chaosModeToggle.indeterminate = false;
+  saveCategories();
+});
+
+CATEGORY_KEYS.forEach(k => {
+  getCategoryCheckbox(k).addEventListener('change', () => {
+    updateChaosMode();
+    saveCategories();
+  });
+});
 
 // Reset profile
 makeConfirmable(
@@ -93,8 +138,9 @@ makeConfirmable(
     chrome.storage.local.set({ unblockedElements: [] }),
   ]).then(() => {
     enabledToggle.checked = SYNC_DEFAULTS.enabled;
-    categorySelect.value = SYNC_DEFAULTS.category;
     hoverToggle.checked = SYNC_DEFAULTS.showHoverControls;
+    CATEGORY_KEYS.forEach(k => { getCategoryCheckbox(k).checked = true; });
+    updateChaosMode();
     showFeedback(profileFeedback, 'Successfully reset. Refresh page to see effect.');
   })
 );
@@ -187,8 +233,9 @@ importFile.addEventListener('change', () => {
 
     const syncData = {
       enabled: typeof data.enabled === 'boolean' ? data.enabled : SYNC_DEFAULTS.enabled,
-      category: typeof data.category === 'string' ? data.category : SYNC_DEFAULTS.category,
       showHoverControls: typeof data.showHoverControls === 'boolean' ? data.showHoverControls : SYNC_DEFAULTS.showHoverControls,
+      categories: (typeof data.categories === 'object' && data.categories !== null)
+        ? data.categories : SYNC_DEFAULTS.categories,
     };
     const localData = {
       unblockedElements: Array.isArray(data.unblockedElements) ? data.unblockedElements : [],
@@ -199,8 +246,10 @@ importFile.addEventListener('change', () => {
       chrome.storage.local.set(localData),
     ]).then(() => {
       enabledToggle.checked = syncData.enabled;
-      categorySelect.value = syncData.category;
       hoverToggle.checked = syncData.showHoverControls;
+      const cats = syncData.categories || CATEGORY_DEFAULTS;
+      CATEGORY_KEYS.forEach(k => { getCategoryCheckbox(k).checked = cats[k] ?? true; });
+      updateChaosMode();
       showFeedback(profileFeedback, 'Successfully imported settings. Refresh page to see effect.');
     });
   };

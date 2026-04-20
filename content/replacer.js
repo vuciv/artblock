@@ -5,14 +5,19 @@
   const AR = window.__artReplacer;
   if (!AR) return;
 
+  const ALL_CATEGORIES = ['impressionism', 'japanese', 'photography', 'renaissance', 'modern', 'space'];
+  const CATEGORY_DEFAULTS = Object.fromEntries(ALL_CATEGORIES.map(k => [k, true]));
+
   const [syncSettings, localData] = await Promise.all([
-    chrome.storage.sync.get({ enabled: true, category: 'all', showHoverControls: true }),
+    chrome.storage.sync.get({ enabled: true, showHoverControls: true, categories: CATEGORY_DEFAULTS }),
     chrome.storage.local.get({ unblockedElements: [] }),
   ]);
 
   if (!syncSettings.enabled) return;
 
   const settings = syncSettings;
+  const enabledCategories = () =>
+    ALL_CATEGORIES.filter(k => settings.categories?.[k] !== false);
   const pageKey = location.hostname + location.pathname;
   const unblockedSelectors = new Set(
     localData.unblockedElements
@@ -231,7 +236,7 @@
         type: 'GET_ART',
         width: w,
         height: h,
-        category: settings.category,
+        categories: enabledCategories(),
       });
 
       if (!response?.artwork) {
@@ -330,7 +335,7 @@
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync') {
       if (changes.enabled?.newValue === false) location.reload();
-      if (changes.category) settings.category = changes.category.newValue;
+      if (changes.categories) settings.categories = changes.categories.newValue;
       if (changes.showHoverControls !== undefined) settings.showHoverControls = changes.showHoverControls.newValue;
     }
     if (area === 'local' && changes.unblockedElements) {
