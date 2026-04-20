@@ -382,11 +382,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'OPEN_SETTINGS') {
-    const base = chrome.runtime.getURL('popup/popup.html');
-    const url = sender.tab?.url
-      ? `${base}?siteUrl=${encodeURIComponent(sender.tab.url)}`
-      : base;
-    chrome.windows.create({ url, type: 'popup', width: 320, height: 520 });
+    chrome.action.openPopup();
     sendResponse({ ok: true });
     return false;
   }

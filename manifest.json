@@ -5,7 +5,6 @@
   "description": "Replaces every ad on the internet with fine art from the world's greatest museums.",
   "permissions": [
     "storage",
-    "windows",
     "tabs"
   ],
   "host_permissions": [

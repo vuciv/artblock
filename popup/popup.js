@@ -59,10 +59,6 @@ function makeConfirmable(triggerId, warningText, confirmLabel, onConfirm) {
 }
 
 async function getPageKey() {
-  const param = new URLSearchParams(location.search).get('siteUrl');
-  if (param) {
-    try { return new URL(param).hostname + new URL(param).pathname; } catch {}
-  }
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab?.url) return new URL(tab.url).hostname + new URL(tab.url).pathname;
