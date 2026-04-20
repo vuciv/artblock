@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <div class="header">
+      <h1>Artblock</h1>
+      <p class="tagline">Every ad becomes a masterpiece</p>
+    </div>
+
+    <div class="toggle-row">
+      <span class="toggle-label">Enabled</span>
+      <label class="toggle">
+        <input type="checkbox" id="enabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <label for="category">Source</label>
+      <select id="category">
+        <optgroup label="Everything">
+          <option value="all">All Sources (Chaos Mode)</option>
+        </optgroup>
+        <optgroup label="Fine Art">
+          <option value="impressionism">Impressionism</option>
+          <option value="japanese">Japanese Woodblock</option>
+          <option value="photography">Photography</option>
+          <option value="renaissance">Renaissance</option>
+          <option value="modern">Modern / Contemporary</option>
+        </optgroup>
+        <optgroup label="Space">
+          <option value="space">NASA Space Imagery</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-number" id="count">0</span>
+        <span class="stat-label">ads replaced this session</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Art Institute of Chicago &middot; The Met &middot; NASA</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+.DS_Store
+.claude/
+node_modules/
+*.zip
+
+# Dead code / unused directories — not loaded by manifest
+lib/
+scripts/
+scriptlets/
+web_accessible_resources/
+
+# Local painting downloads (dev/test assets, not shipped)
+beautiful-paintings/
+impressionist-paintings/
+download-paintings.mjs
+download-paintings.sh
