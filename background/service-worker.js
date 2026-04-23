@@ -380,22 +380,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     fetchAndCache(message.category).then(() => sendResponse({ ok: true }));
     return true;
   }
+
+  if (message.type === 'OPEN_SETTINGS') {
+    chrome.action.openPopup();
+    sendResponse({ ok: true });
+    return false;
+  }
 });
 
-async function handleGetArt({ width, height, category }) {
+async function handleGetArt({ width, height, categories }) {
+  if (!categories?.length) return null;
+
   const aspectClass = classifyAspect(width, height);
   const targetRatio = width / height;
 
-  // Try cache first (pops the item so it's never reused)
-  let artwork = await popFromCache(aspectClass, category, targetRatio);
+  // Shuffle so we don't always favour the first category
+  const shuffled = [...categories].sort(() => Math.random() - 0.5);
 
-  if (!artwork) {
-    // Cache empty — fetch from all APIs in parallel
-    await fetchAndCache(category);
-    artwork = await popFromCache(aspectClass, category, targetRatio);
+  for (const category of shuffled) {
+    const artwork = await popFromCache(aspectClass, category, targetRatio);
+    if (artwork) return { artwork };
   }
 
-  return artwork ? { artwork } : null;
+  // Cache miss — refill all enabled categories in parallel then try again
+  await Promise.all(shuffled.map(cat => fetchAndCache(cat)));
+
+  for (const category of shuffled) {
+    const artwork = await popFromCache(aspectClass, category, targetRatio);
+    if (artwork) return { artwork };
+  }
+
+  return null;
 }
 
 // --- Lifecycle ---
@@ -404,11 +419,8 @@ chrome.runtime.onInstalled.addListener(async () => {
   console.log('[Art Replacer] Installed — prefetching art from all sources...');
   // Hit all 4 APIs to build up a healthy initial cache
   await Promise.all([
-    fetchAndCache('all'),
-    fetchAndCache('all'),
-    fetchAndCache('all'),
-    fetchAndCache('all'),
-  ]);
+    'impressionism', 'japanese', 'photography', 'renaissance', 'modern', 'space',
+  ].map(cat => fetchAndCache(cat)));
   console.log('[Art Replacer] Prefetch complete');
 });
 

@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Replaces every ad on the internet with fine art from the world's greatest museums.",
   "permissions": [
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"

@@ -19,29 +19,82 @@
       </label>
     </div>
 
-    <div class="setting-row">
-      <label for="category">Source</label>
-      <select id="category">
-        <optgroup label="Everything">
-          <option value="all">All Sources (Chaos Mode)</option>
-        </optgroup>
-        <optgroup label="Fine Art">
-          <option value="impressionism">Impressionism</option>
-          <option value="japanese">Japanese Woodblock</option>
-          <option value="photography">Photography</option>
-          <option value="renaissance">Renaissance</option>
-          <option value="modern">Modern / Contemporary</option>
-        </optgroup>
-        <optgroup label="Space">
-          <option value="space">NASA Space Imagery</option>
-        </optgroup>
-      </select>
+    <div class="toggle-row">
+      <span class="toggle-label">Hover controls</span>
+      <label class="toggle">
+        <input type="checkbox" id="showHoverControls" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="feedback" id="hoverFeedback"></p>
+
+    <button class="sources-btn" id="sourcesToggle">
+      <span>Toggle Sources</span>
+      <span class="sources-chevron">›</span>
+    </button>
+
+    <div class="sources-content" id="sourcesContent" hidden>
+      <div class="toggle-row">
+        <div class="toggle-label-group">
+          <span class="toggle-label">Chaos Mode</span>
+          <span class="toggle-desc">Toggle all sources</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chaosMode">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="category-group">
+        <div class="toggle-row">
+          <span class="toggle-label">Impressionism</span>
+          <label class="toggle"><input type="checkbox" id="cat-impressionism"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Japanese Woodblock</span>
+          <label class="toggle"><input type="checkbox" id="cat-japanese"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Photography</span>
+          <label class="toggle"><input type="checkbox" id="cat-photography"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Renaissance</span>
+          <label class="toggle"><input type="checkbox" id="cat-renaissance"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Modern / Contemporary</span>
+          <label class="toggle"><input type="checkbox" id="cat-modern"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">NASA Space Imagery</span>
+          <label class="toggle"><input type="checkbox" id="cat-space"><span class="slider"></span></label>
+        </div>
+      </div>
     </div>
 
     <div class="stats">
       <div class="stat">
         <span class="stat-number" id="count">0</span>
         <span class="stat-label">ads replaced this session</span>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <div class="section-label">Your profile</div>
+      
+      <div class="data-row">
+        <button class="action-btn" id="exportSettings">Export settings</button>
+        <button class="action-btn" id="importSettings">Import settings</button>
+        <input type="file" id="importFile" accept=".json" style="display:none">
+      </div>
+      <p class="feedback" id="profileFeedback"></p>
+
+      <div class="reset-row" id="resetSiteRow" style="display:none">
+        <button class="reset-btn" id="resetSite">Reset site settings</button>
+      </div>
+
+      <div class="reset-row">
+        <button class="reset-btn" id="resetProfile">Reset profile</button>
       </div>
     </div>
 
