@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Artblock",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Replaces every ad on the internet with fine art from the world's greatest museums.",
   "permissions": [
     "storage",
